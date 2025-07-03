@@ -4,6 +4,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const { v4: uuidv4 } = require('uuid');
+const MONGO_URI = 'mongodb://localhost:27017/productsDB'; // Replace with your MongoDB URI
+const mongoose = require('mongoose');
+const productRoutes = require('./routes/productRoutes'); // Import product routes
+
+
+//connecting mongodb
+mongoose.connect(MONGO_URI,{
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(()=> console.log("MongoDB connected"))
+.catch(err => console.error("MongoDB connection error:", err));
+
+
 
 // Initialize Express app
 const app = express();
@@ -11,6 +25,8 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware setup
 app.use(bodyParser.json());
+app.use(express.json());
+app.use("/api/products",productRoutes);
 
 // Sample in-memory products database
 let products = [
